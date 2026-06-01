@@ -155,6 +155,87 @@ Poll the deployments query to check status.
 ## Deployment Script Location
 See `scripts/railway-deploy.sh` for a complete working example.
 
+## Docker Deployment Pattern
+
+### Dockerfile Structure (Multi-stage)
+```dockerfile
+# Stage 1: Build
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json tsconfig.json vite.config.ts ./
+RUN npm ci
+COPY src ./src
+RUN npm run build
+
+# Stage 2: Production
+FROM node:20-alpine
+WORKDIR /app
+RUN npm install -g serve
+COPY --from=builder /app/dist ./dist
+COPY package*.json ./
+RUN npm ci --production
+EXPOSE 5173
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:5173', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
+CMD ["serve", "-s", "dist", "-l", "5173"]
+```
+
+### Procfile Configuration
+```
+web: npm run build && npm run preview
+```
+
+### railway.json Configuration
+```json
+{
+  "$schema": "https://railway.app/json-schema/railway.schema.json",
+  "build": {
+    "builder": "dockerfile",
+    "dockerfilePath": "Dockerfile"
+  },
+  "deploy": {
+    "startCommand": "npm run preview",
+    "healthcheckPath": "/",
+    "healthcheckTimeout": 30
+  },
+  "variables": {
+    "NODE_ENV": {"value": "production"},
+    "GITHUB_TOKEN": {"value": "${{ secrets.GITHUB_TOKEN }}"},
+    "RAILWAY_TOKEN": {"value": "${{ secrets.RAILWAY_TOKEN }}"}
+  }
+}
+```
+
+## GitHub Integration Pattern
+
+### Setup Steps
+1. Connect GitHub repository to Railway project
+2. Select the repository branch (main)
+3. Railway auto-detects Dockerfile
+4. Set environment variables in Railway UI
+5. Auto-deploy on every push
+
+### GitHub Actions Workflow
+```yaml
+name: Deploy to Railway
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+      - run: npm ci && npm run build
+```
+
 ## References
 - [Railway GraphQL API Docs](https://docs.railway.app/reference)
 - [Railway API Explorer](https://api.railway.app/)
+- [Railway Docker Deployment](https://docs.railway.app/deploy/builds)
+- [Railway GitHub Integration](https://docs.railway.app/deploy/github)
