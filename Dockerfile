@@ -1,44 +1,28 @@
-# Build stage
-FROM node:20-alpine AS builder
+# syntax=docker/dockerfile:1
 
+# --- Build stage: install deps and build the Next.js standalone output ---
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-COPY tsconfig.json ./
-COPY vite.config.ts ./
+# Install dependencies (no committed lockfile; resolve from package.json).
+COPY package.json ./
+RUN npm install
 
-# Install dependencies
-RUN npm ci
-
-# Copy source code
-COPY src ./src
-COPY public ./public 2>/dev/null || true
-
-# Build application
+# Build the app. output: "standalone" emits a self-contained server bundle.
+COPY . .
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# Production stage
-FROM node:20-alpine
-
+# --- Runtime stage: run the standalone Next.js server ---
+FROM node:20-alpine AS runner
 WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install serve or use built-in preview
-RUN npm install -g serve
+# Static assets and the standalone server (server.js listens on $PORT, host 0.0.0.0).
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
-# Copy built application from builder
-COPY --from=builder /app/dist ./dist
-
-# Copy package.json for dependencies
-COPY package*.json ./
-RUN npm ci --production
-
-# Expose port
-EXPOSE 5173
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:5173', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
-
-# Start application
-CMD ["serve", "-s", "dist", "-l", "5173"]
+EXPOSE 3000
+CMD ["node", "server.js"]

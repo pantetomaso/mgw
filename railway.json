@@ -1,30 +1,13 @@
 {
-  "$schema": "https://railway.app/json-schema/railway.schema.json",
+  "$schema": "https://railway.com/railway.schema.json",
   "build": {
-    "builder": "dockerfile",
+    "builder": "DOCKERFILE",
     "dockerfilePath": "Dockerfile"
   },
   "deploy": {
-    "startCommand": "npm run preview",
     "healthcheckPath": "/",
-    "healthcheckTimeout": 30
-  },
-  "variables": {
-    "GITHUB_TOKEN": {
-      "description": "GitHub personal access token for API access",
-      "value": "${{ secrets.GITHUB_TOKEN }}"
-    },
-    "RAILWAY_TOKEN": {
-      "description": "Railway API token",
-      "value": "${{ secrets.RAILWAY_TOKEN }}"
-    },
-    "RAILWAY_PROJECT_ID": {
-      "description": "Railway project ID",
-      "value": "${{ secrets.RAILWAY_PROJECT_ID }}"
-    },
-    "NODE_ENV": {
-      "description": "Node environment",
-      "value": "production"
-    }
+    "healthcheckTimeout": 100,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 3
   }
 }

@@ -16,6 +16,15 @@ dist-ssr
 .nitro
 *.local
 
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Not used (project uses npm); ignored to avoid stray re-creation
+bun.lock
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
@@ -31,3 +40,9 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Google Cloud service account keys — NE JAMAIS COMMIT
+marseille-good-waves-*.json
+*-service-account*.json
+gcp-key*.json
+service-account*.json

@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.env
+*.log
+.DS_Store
+README*.md
+DEPLOYMENT*.md
+RAILWAY*.md
+.github
+scripts
+.lovable
