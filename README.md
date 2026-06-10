@@ -15,13 +15,14 @@ Migrée depuis un prototype Lovable / TanStack Start — seul le design a été 
 | `/v1` | « Mediterranean Sunrise » — hero plein écran, sessions en cartes |
 | `/v2` | « Logo Original » — hero en split, logo + typo script, sessions en liste |
 | `/kyma` | Site de l'événement **KYMA** — page de présentation (concept, format, ateliers, lieu, calendrier) |
-| `/kyma/billetterie` | Billetterie KYMA — sélection de session en binôme + demande d'inscription par email |
+| `/kyma/billetterie` | Billetterie KYMA — présentation des 5 sessions + bouton d'achat redirigeant vers la billetterie en ligne Finisher |
 
 > **KYMA** — *Endurance Hybrid Race*, événement Marseille Good Waves à la Marina
 > Olympique de Marseille les 3 & 4 octobre 2026. Charte propre (dégradé
 > bleu→violet→corail, logo crème extrait du dossier de présentation, police
-> Fredoka). Les tarifs de la billetterie sont **indicatifs** et à ajuster avant
-> l'ouverture des ventes (`app/kyma/billetterie/page.tsx`).
+> Fredoka). L'achat des billets se fait sur **Finisher** : renseignez l'URL de
+> l'événement dans la constante `FINISHER_URL` en haut de
+> `app/kyma/billetterie/page.tsx`.
 
 ## Structure
 
