@@ -25,12 +25,27 @@
     font-display: swap;
     src: url("https://fonts.gstatic.com/s/caveat/v18/WnznHAc5bAfYB2QRah7pcpNvOx-pjfJ9eIWp.woff2") format("woff2");
   }
+  @font-face {
+    font-family: "Fredoka";
+    font-style: normal;
+    font-weight: 300 700;
+    font-display: swap;
+    src: url("/assets/kyma/fredoka.woff2") format("woff2");
+  }
 }
 
 @theme inline {
   --font-display: "Fraunces", ui-serif, Georgia, serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-script: "Caveat", ui-serif, cursive;
+  --font-rounded: "Fredoka", ui-rounded, "Inter", sans-serif;
+
+  --color-kyma-blue: #2b4aa2;
+  --color-kyma-indigo: #3a3f8f;
+  --color-kyma-purple: #7a4a85;
+  --color-kyma-coral: #ec5a44;
+  --color-kyma-cream: #f0e7c7;
+  --color-kyma-ink: #1c1640;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -163,3 +178,16 @@
 @utility bg-gradient-hero { background: var(--gradient-hero); }
 @utility shadow-soft { box-shadow: var(--shadow-soft); }
 @utility shadow-glow { box-shadow: var(--shadow-glow); }
+
+/* ---- KYMA event brand ---- */
+@utility font-rounded { font-family: var(--font-rounded); }
+
+@utility bg-kyma {
+  background:
+    radial-gradient(120% 90% at 85% 8%, #2b4aa2 0%, rgba(43, 74, 162, 0) 55%),
+    radial-gradient(120% 120% at 50% 120%, #ec5a44 0%, rgba(236, 90, 68, 0) 60%),
+    linear-gradient(165deg, #2b4aa2 0%, #4a4690 32%, #7a4a85 55%, #c25d57 80%, #ec5a44 100%);
+}
+@utility bg-kyma-soft {
+  background: linear-gradient(160deg, #2b4aa2 0%, #6a4a8c 55%, #ec5a44 130%);
+}
